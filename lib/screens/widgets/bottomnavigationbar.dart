@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mono/constants/app_color.dart';
-import 'package:mono/screens/add_screen.dart';
-import 'package:mono/screens/home_screen.dart';
-import 'package:mono/screens/settings_screen.dart';
-import 'package:mono/screens/transcation_page/transcation_screen.dart';
+import 'package:mono/screens/home_screen/home_screen.dart';
+import 'package:mono/screens/setting_screen/settings_screen.dart';
+import 'package:mono/screens/transcation_screen/transcation_screen.dart';
 
 class BottomNavigator extends StatefulWidget {
   const BottomNavigator({Key? key}) : super(key: key);
@@ -15,7 +14,7 @@ class BottomNavigator extends StatefulWidget {
 
 class _BottomNavigatorState extends State<BottomNavigator> {
   int _selectedIndex = 1;
-  List pages = [const TranscationScreen(), HomeScreen(), const SettingsScreen(),];
+  List pages = [const TranscationScreen(), const HomeScreen(), const SettingsScreen(),];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,5 +42,6 @@ class _BottomNavigatorState extends State<BottomNavigator> {
     setState(() {
       _selectedIndex = index;
     });
+    
   }
 }

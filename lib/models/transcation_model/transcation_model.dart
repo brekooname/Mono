@@ -1,5 +1,4 @@
 import 'package:hive_flutter/adapters.dart';
-import 'package:mono/models/category_model/category_model.dart';
 part 'transcation_model.g.dart';
 @HiveType(typeId: 3)
 class TranscationModel {
@@ -14,14 +13,14 @@ class TranscationModel {
   @HiveField(5)
    String? purpose;
    @HiveField(6)
-   String?id;
+   String id;
 
   TranscationModel(
       {required this.type,
       required this.amount,
       required this.date,
       required this.category,
-     this.purpose }){
-       id=DateTime.now().millisecondsSinceEpoch.toString();
-     }
+     this.purpose,
+    required this.id });
+   
 }

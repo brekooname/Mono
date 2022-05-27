@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:mono/constants/app_color.dart';
-import 'package:mono/screens/add_screen.dart';
+import 'package:mono/database/Transctions_DB/transcations_db.dart';
+import 'package:mono/screens/add_screen/add_screen.dart';
+import 'package:mono/screens/transcation_screen/transcation_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class HomeScreen extends StatefulWidget {
-  HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  
+
   String? enteredname;
   
 
   @override
   void initState(){
-        getnamedata();
-
     super.initState();
+     TranscationDB.instance.refresh();
+     
+        getnamedata();
   }
 
    getnamedata()async{
@@ -56,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   left: 40,
                   child: Text(
                   "Hi, $enteredname ",
-                    style: TextStyle(color: Colors.white, fontSize: 30),
+                    style: const TextStyle(color: Colors.white, fontSize: 30),
                   ),
                 ),
                 const Positioned(
@@ -97,9 +102,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               const SizedBox(
                                 height: 15.0,
                               ),
-                              const Text(
-                                "₹800",
-                                style: TextStyle(
+                               Text(
+                                totalBalance.toString(),
+                                style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 33,
                                     fontWeight: FontWeight.bold),
@@ -171,9 +176,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               const SizedBox(
                                 height: 30,
                               ),
-                              const Text(
-                                "₹1000.0",
-                                style: TextStyle(
+                               Text(
+                                totalIncome.toString(),
+                                style: const TextStyle(
                                     fontSize: 22.0,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -211,9 +216,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               const SizedBox(
                                 height: 30,
                               ),
-                              const Text(
-                                "₹1001.0",
-                                style: TextStyle(
+                               Text(
+                               totalExpense.toString() ,
+                                style: const TextStyle(
                                     fontSize: 22.0,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -240,6 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 70.0,
                       child: FloatingActionButton(
                         onPressed: () {
+                          TranscationDB.instance.refresh();
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
                             return const AddScreen();

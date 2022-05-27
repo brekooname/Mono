@@ -1,40 +1,44 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:mono/constants/app_color.dart';
 import 'package:mono/database/Transctions_DB/transcations_db.dart';
 import 'package:mono/models/transcation_model/transcation_model.dart';
-import 'package:mono/screens/transcation_page/transcation_screen.dart';
+import 'package:mono/screens/add_screen/decoration_functions.dart';
 import 'package:mono/screens/widgets/add_clipper.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
-import '../database/categories_DB/category_db.dart';
 
-class AddScreen extends StatefulWidget {
-  const AddScreen({Key? key}) : super(key: key);
+class EditScreen extends StatefulWidget {
+  // final double amount;
+  // final DateTime date;
+  // final String category;
+  // final String type;
+  // final String id;
+  final TranscationModel value;
+
+  //final String? purpose;
+
+  const EditScreen(
+      {Key? key,
+      // required this.amount,
+      // required this.category,
+      // required this.date,
+      // required this.type,
+      // required this.id,
+      // this.purpose
+      required this.value,
+      })
+      : super(key: key);
 
   @override
-  State<AddScreen> createState() => _AddScreenState();
+  State<EditScreen> createState() => _EditScreenState();
 }
 
-class _AddScreenState extends State<AddScreen> {
+class _EditScreenState extends State<EditScreen> {
   List<dynamic> transcationType = [];
   List<dynamic> categorieslist = [];
   List<dynamic> categories = [];
- // ValueNotifier<int> selecteddropdownindexnotifier = ValueNotifier(1);
 
   String? transctiontypeid;
   String? categoryid;
-  // var categories = [
-  //   'Shopping',
-  //   'Travel',
-  //   'Food',
-  //   'Rent',
-  //   'Medical',
-  //   'Utilites',
-  //   'Educations',
-  //   'Other'
-  // ];
-  //late String categovalue;
 
   DateTime selectedDate = DateTime.now();
 
@@ -45,11 +49,13 @@ class _AddScreenState extends State<AddScreen> {
 
   @override
   void initState() {
-    super.initState();
-    CategoryDB().refreshUI();
+    _amountcontrol.text = widget.value.amount.toString();
+    selectedDate = widget.value.date;
+    // _notescontrol.text=widget.purpose.toString();
 
-    // categovalue = categories[0];
-    transcationType.add({"id": "Income",'name': 'Income'});
+    super.initState();
+
+    transcationType.add({"id": "Income", 'name': 'Income'});
     transcationType.add({"id": 'Expense', "name": 'Expense'});
 
     categorieslist = [
@@ -64,6 +70,7 @@ class _AddScreenState extends State<AddScreen> {
       {'Id': 'Freelance', 'Name': 'Freelance', 'parentId': 'Income'},
       {'Id': 'Commission', 'Name': 'Commission', 'parentId': 'Income'},
     ];
+    //transctiontypeid = widget.type;
   }
 
   @override
@@ -71,7 +78,7 @@ class _AddScreenState extends State<AddScreen> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             height: MediaQuery.of(context).size.height,
             child: Stack(
               children: [
@@ -86,7 +93,7 @@ class _AddScreenState extends State<AddScreen> {
                   top: 55,
                   left: 130,
                   child: Text(
-                    "Add Transcation",
+                    "Edit Transcation",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -113,41 +120,39 @@ class _AddScreenState extends State<AddScreen> {
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          //  mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             textstyle("transcation type"),
                             const SizedBox(
                               height: 10,
                             ),
-                            
-                                   FormHelper.dropDownWidget(
-                                    context,
-                                    "Select Transcation Type",
-                                    transctiontypeid,
-                                    transcationType,
-                                    (onchangeval) {
-                                         categoryid = null;
-                                      setState(() {});
-                                      transctiontypeid = onchangeval;
-                                      print('trans$onchangeval');
-                                      categories = categorieslist
-                                          .where((categoryItem) =>
-                                              categoryItem["parentId"]
-                                                  .toString() ==
-                                              onchangeval.toString())
-                                          .toList();
-                                     
-                                    },
-                                    (onValidate) {
-                                      if (onValidate == null) {
-                                        return;
-                                      }
-                                    },
-                                    borderColor: Colors.grey,
-                                    borderRadius: 10,
-                                    borderFocusColor: mainHexcolor,
-                                  ),
-                             
+                            FormHelper.dropDownWidget(
+                              context,
+                              widget.value.type,
+                              transctiontypeid,
+                              transcationType,
+                              (onchangeval) {
+                                categoryid = null;
+                                setState(() {});
+                                transctiontypeid = onchangeval;
+
+                                //print("after ${widget.type}");
+                                setState(() {
+                                  categories = categorieslist
+                                      .where((categoryItem) =>
+                                          categoryItem["parentId"].toString() ==
+                                          onchangeval.toString())
+                                      .toList();
+                                });
+                              },
+                              (onValidate) {
+                                if (onValidate == null) {
+                                  return;
+                                }
+                              },
+                              borderColor: Colors.grey,
+                              borderRadius: 10,
+                              borderFocusColor: mainHexcolor,
+                            ),
                             const SizedBox(
                               height: 24,
                             ),
@@ -211,55 +216,23 @@ class _AddScreenState extends State<AddScreen> {
                               height: 10,
                             ),
                             FormHelper.dropDownWidget(
-                                context,
-                                "Select categories",
-                                categoryid,
-                                categories, (onchangeval) {
-                                  setState(() {
-                                    
-                                  });
-                              categoryid = onchangeval;
-                              print(" catergo :$onchangeval");
-                            }, (onValidate) {
-                               
+                              context,
+                              widget.value.category,
+                              categoryid,
+                              categories,
+                              (onchangeval) {
+                                setState(() {});
+                                categoryid = onchangeval;
+                              },
+                              (onValidate) {
                                 return null;
-                              
-                            },
-                                borderColor: Colors.grey,
-                                borderRadius: 10,
-                                borderFocusColor: mainHexcolor,
-                                optionValue: "Id",
-                                optionLabel: "Name",
-                                
-                                ),
-                            // DropdownButtonHideUnderline(
-                            //   child: DropdownButtonFormField(
-                            //     alignment: AlignmentDirectional.topStart,
-                            //     decoration: dropdowndecor(),
-                            //     value: categovalue,
-                            //     items: categories.map((String value) {
-                            //       return DropdownMenuItem<String>(
-                            //         value: value,
-                            //         child: Text(value),
-                            //       );
-                            //     }).toList(),
-                            //     onChanged: (String? value) {
-                            //       setState(() {
-                            //         categovalue = value!;
-                            //       });
-                            //     },
-                            //   ),
-                            // ),
-
-                            // AddTodoButton(
-                            //     selectedindex:
-                            //         selecteddropdownindexnotifier.value),
-
-                            //                    ElevatedButton(onPressed: (){
-                            //                         Navigator.of(context).push(HeroDialogRoute(builder: (context) {
-                            //   return const _AddTodoPopupCard();
-                            // }));
-                            //                    }, child:const Text("add categories")),///////////////////////////////////////
+                              },
+                              borderColor: Colors.grey,
+                              borderRadius: 10,
+                              borderFocusColor: mainHexcolor,
+                              optionValue: "Id",
+                              optionLabel: "Name",
+                            ),
                             const SizedBox(
                               height: 10,
                             ),
@@ -277,17 +250,11 @@ class _AddScreenState extends State<AddScreen> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                             //   print('Dropdown index:${selecteddropdownindexnotifier.value}');
+                                updatetranscation();
                                 
-                                
-
-                                if (_formkey.currentState!.validate()) {
-                                  addtransbutton();
-                  
-                                }
                               },
                               child: const Text(
-                                'Add',
+                                'Update',
                                 style: TextStyle(
                                     color: Color.fromARGB(255, 246, 243, 243)),
                               ),
@@ -314,37 +281,6 @@ class _AddScreenState extends State<AddScreen> {
     );
   }
 
-  Text textstyle(String text) {
-    return Text(
-      text,
-      style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Color.fromARGB(255, 116, 112, 112)),
-    );
-  }
-
-  InputDecoration textfielddecor(String text) {
-    return InputDecoration(
-        errorBorder:
-            const OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
-        focusedBorder:
-            OutlineInputBorder(borderSide: BorderSide(color: mainHexcolor)),
-        hintText: text,
-        border: const OutlineInputBorder());
-  }
-
-  InputDecoration dropdowndecor() {
-    return InputDecoration(
-        //  isCollapsed: true,
-        isDense: false,
-        focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: mainHexcolor, width: 1.0),
-            borderRadius: BorderRadius.circular(4)),
-        enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.grey),
-            borderRadius: BorderRadius.circular(4)));
-  }
-
   Future<DateTime?> pickDate(context) async {
     final selected = await showDatePicker(
       context: context,
@@ -360,10 +296,10 @@ class _AddScreenState extends State<AddScreen> {
     return null;
   }
 
-  Future addtransbutton() async {
+  Future updatetranscation() async {
     final amountval = _amountcontrol.text;
     final purposeval = _notescontrol.text;
-   
+
     final _parseamount = double.tryParse(amountval);
     if (_parseamount == null) {
       return;
@@ -371,20 +307,17 @@ class _AddScreenState extends State<AddScreen> {
     if (categoryid == null) {
       return;
     }
-
-
-  final _model=  TranscationModel(
-            
+        final _model = TranscationModel(
         type: transctiontypeid!,
         amount: _parseamount,
         date: selectedDate,
         category: categoryid!,
-        purpose: purposeval);
-        TranscationDB.instance.addtranscation(_model);
-        print(_model.amount);
-        print(_model.category);
-        print(_model.date);
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>const TranscationScreen()));
+        purpose: purposeval,
+        id: widget.value.id);
+
+    TranscationDB.instance.updatetranscation(_model);
+    print('after value $_parseamount');
+       Navigator.of(context).pop( _model);
+       
   }
-  
 }
