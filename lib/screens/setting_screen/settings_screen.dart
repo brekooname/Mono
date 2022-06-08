@@ -1,7 +1,18 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mono/constants/app_color.dart';
+import 'package:mono/database/Transctions_DB/transcations_db.dart';
+import 'package:mono/providers/theme_provider.dart';
+import 'package:mono/screens/IntroPages/splash_screen.dart';
+import 'package:mono/screens/add_screen/add_screen.dart';
+import 'package:mono/screens/setting_screen/settings_widgets/about_screen.dart';
+import 'package:mono/screens/setting_screen/settings_widgets/notification.dart';
+import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+bool switchnoti = true;
+//bool _switchtheme = false;
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -11,21 +22,33 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _switchnoti = false;
-  bool _switchtheme = false;
   bool expandabout = false;
-  
+  @override
+  void initState() {
+    super.initState();
+    NotificationApi().init(initScheduled: true);
+    listenNotifications();
+  }
+
+  void listenNotifications() {
+    NotificationApi.onNotifications.listen(onClickNotifications);
+  }
+
+  onClickNotifications(String? payload) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const AddScreen()));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final themepovider = Provider.of<DarkThemeProvider>(context);
     return Scaffold(
-     
       body: SafeArea(
         child: Column(
           children: [
             SizedBox(
-               height: MediaQuery.of(context).size.height*.88,
               child: Stack(
-               clipBehavior: Clip.none,
+                clipBehavior: Clip.none,
                 alignment: Alignment.center,
                 children: [
                   Column(
@@ -34,22 +57,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ClipPath(
                         clipper: WaveClipper(),
                         child: Container(
-                          color: mainHexcolor,
-                          height: 134.0,
+                          color: Theme.of(context).dividerColor,
+                          height: 17.0.h,
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 3.0, top: 30),
+                        padding: EdgeInsets.only(left: 1.w, top: 3.h),
                         child: Container(
-                          width: 360,
-                          height: 520,
+                          width: 90.w,
+                          height: 65.h,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(7),
-                              color: Colors.white,
+                              color: Theme.of(context).primaryColor,
                               boxShadow: const [
                                 BoxShadow(
                                   color: Colors.grey,
-                                  blurRadius: 8,
+                                  blurRadius: 4,
                                 )
                               ]),
                           child: Padding(
@@ -57,63 +80,117 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text(
-                                      "Push Notifications",
+                                SwitchListTile(
+                                    title: Text(
+                                      "Notification",
                                       style: TextStyle(
-                                          fontSize: 18,
+                                          fontSize: 15.sp,
                                           fontWeight: FontWeight.w400),
                                     ),
-                                    CupertinoSwitch(
-                                      activeColor: mainHexcolor,
-                                      onChanged: ( value) {
-                                        setState(() {
-                                          _switchnoti = value;
-                                        });
-                                      },
-                                      value: _switchnoti,
-                                    )
-                                  ],
+                                    secondary: const Icon(Icons.notifications),
+                                    activeColor: mainHexcolor,
+                                    value: switchnoti,
+                                    onChanged: (newvalue) {
+                                      setState(() {
+                                        switchnoti = newvalue;
+                                      });
+                                      switchnoti == true
+                                          ? NotificationApi.shownotification(
+                                              title: 'Mono',
+                                              body:
+                                                  "Don't Forget To Add Your Transaction",
+                                              scheduleDate:
+                                                  const Time(18, 00, 00))
+                                          : const SizedBox();
+                                    }),
+                                SizedBox(
+                                  height: 2.h,
                                 ),
-                             
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text(
-                                      "Dark Mode",
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                    CupertinoSwitch(
-                                      activeColor: mainHexcolor,
-                                        value: _switchtheme,
-                                        onChanged: ( newvalue) {
-                                        
-                                          setState(() {
-                                            _switchtheme = newvalue;
-                                          });
-                                        })
-                                  ],
+                                SwitchListTile(
+                                  activeColor: mainHexcolor,
+                                  title: Text(
+                                    "Dark Mode",
+                                    style: TextStyle(
+                                        fontSize: 15.sp,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  secondary: Icon(themepovider.darkTheme
+                                      ? Icons.dark_mode_outlined
+                                      : Icons.light_mode_outlined),
+                                  onChanged: (newvalue) {
+                                    setState(() {
+                                      themepovider.darkTheme = newvalue;
+                                    });
+                                  },
+                                  value: themepovider.darkTheme,
                                 ),
                                 const Divider(),
                                 Text(
                                   "More",
                                   style: TextStyle(
-                                      color: Colors.grey.shade400, fontSize: 18),
+                                      color: Colors.grey.shade400,
+                                      fontSize: 14.sp),
                                 ),
-                               const ExpansionTile(
-                                  title:  Text("About Us"),
-                                  // onExpansionChanged:(){} ,
-                                  children:  [Text("data")],
+                                SizedBox(
+                                  height: 2.h,
                                 ),
+                                ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Theme.of(context)
+                                                    .primaryColorDark),
+                                        minimumSize: MaterialStateProperty.all(
+                                            Size(1.w, 5.5.h))),
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const AboutScreen()));
+                                    },
+                                    child: const Text("About",
+                                        style: TextStyle())),
+                                SizedBox(
+                                  height: 1.5.h,
+                                ),
+                                ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Theme.of(context)
+                                                    .primaryColorDark),
+                                        minimumSize: MaterialStateProperty.all(
+                                            Size(1.w, 5.5.h))),
+                                    onPressed: () async {
+                                      // ignore: deprecated_member_use
+                                      if (!await launch(
+                                          'mailto:rafikkvavoor@gmail.com?subject=Mono-App&body=write your own...')) {
+                                        throw 'Could not send massage';
+                                      }
+                                    },
+                                    child: const Text("Send feedback")),
+                                SizedBox(
+                                  height: 1.5.h,
+                                ),
+                                ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Theme.of(context)
+                                                    .primaryColorDark),
+                                        minimumSize: MaterialStateProperty.all(
+                                            Size(1.w, 5.5.h))),
+                                    onPressed: () async {
+                                      TranscationDB.instance.cleardatabase();
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const SplashScreen()),
+                                          (route) => false);
+                                    },
+                                    child: const Text("Reset App"))
                               ],
                             ),
                           ),
@@ -121,26 +198,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ],
                   ),
-                  const Positioned(
-                    top: 60,
+                  Positioned(
+                    top: 5.h,
                     child: Text(
                       "Settings",
                       style: TextStyle(
-                          fontSize: 15,
+                          fontSize: 15.sp,
                           fontWeight: FontWeight.bold,
                           color: Colors.white),
                     ),
                   ),
-                  
-                  Positioned(
-                      left: 0,
-                      bottom: -20,
-                      child: Image.asset(
-                        'assets/images/singhboy.png',
-                        width: 280,
-                      )),
                 ],
-                
               ),
             ),
           ],
@@ -156,12 +224,13 @@ class WaveClipper extends CustomClipper<Path> {
     var path = Path();
     path.lineTo(0, size.height);
     var firststart = Offset(size.width / 6.29, size.height);
-    var firstend = Offset(size.width / 1.65, size.height - 40.0);
+    var firstend = Offset(size.width / 1.65, size.height - 35.0);
     path.quadraticBezierTo(
         firststart.dx, firststart.dy, firstend.dx, firstend.dy);
     //path.lineTo(size.width/2.25, size.height);
-    var secondstart = Offset(size.width - (size.width / 6), size.height - 50.0);
-    var secondend = Offset(size.width, size.height - 5);
+    var secondstart =
+        Offset(size.width - (size.width / 6.29), size.height - 50.0);
+    var secondend = Offset(size.width, size.height - 4);
     path.quadraticBezierTo(
         secondstart.dx, secondstart.dy, secondend.dx, secondend.dy);
     path.lineTo(size.width, 0);

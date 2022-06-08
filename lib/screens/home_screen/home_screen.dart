@@ -1,10 +1,15 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:mono/constants/app_color.dart';
+
 import 'package:mono/database/Transctions_DB/transcations_db.dart';
 import 'package:mono/screens/add_screen/add_screen.dart';
 import 'package:mono/screens/transcation_screen/transcation_screen.dart';
+import 'package:mono/screens/widgets/navigator_animation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sizer/sizer.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -13,32 +18,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  
-
-  String? enteredname;
-  
+  String enteredname = '';
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-     TranscationDB.instance.refresh();
-     
-        getnamedata();
+    TranscationDB.instance.refresh();
+
+    getnamedata();
   }
 
-   getnamedata()async{
+  getnamedata() async {
     final sharedprefer = await SharedPreferences.getInstance();
-      enteredname =sharedprefer.getString('namekey');
-     setState(() {
-       
-     });
-
+    enteredname = sharedprefer.getString('namekey')!;
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: SafeArea(
+    return Scaffold(
+      body: SafeArea(
         child: Column(
           children: [
             Stack(
@@ -51,38 +50,37 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(70.0),
                           bottomRight: Radius.circular(35.0)),
-                      color: mainHexcolor,
+                      color: Theme.of(context).dividerColor,
                     ),
-                    height: 470,
+                    height: 59.h,
                   ),
                 ),
-                  Positioned(
-                  top: 50,
-                  left: 40,
-                  child: Text(
-                  "Hi, $enteredname ",
-                    style: const TextStyle(color: Colors.white, fontSize: 30),
-                  ),
+                Positioned(
+                  top: 5.h,
+                  left: 10.w,
+                  child: Text("Hi, $enteredname ",
+                      style: GoogleFonts.dancingScript(
+                          color: Colors.white, fontSize: 23.sp)),
                 ),
-                const Positioned(
-                  top: 95,
-                  left: 40,
+                Positioned(
+                  top: 11.h,
+                  left: 10.w,
                   child: Text(
-                    "Welcome back!",
-                    style: TextStyle(
+                    "Welcome back !",
+                    style: GoogleFonts.dancingScript(
                         color: Colors.white,
-                        fontSize: 30,
+                        fontSize: 24.sp,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
                 Positioned(
-                  top: 150,
-                  left: 40,
+                  top: 18.h,
+                  left: 10.w,
                   child: Stack(
                     children: [
                       Container(
-                        height: 160,
-                        width: 310,
+                        height: 24.h,
+                        width: 80.w,
                         decoration: BoxDecoration(
                             color: HexColor("#37474F"),
                             borderRadius: BorderRadius.circular(20.0)),
@@ -92,21 +90,23 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(
-                                height: 10,
+                              SizedBox(
+                                height: .5.h,
                               ),
                               const Text(
                                 "Available balance",
                                 style: TextStyle(color: Colors.white),
                               ),
-                              const SizedBox(
-                                height: 15.0,
+                              SizedBox(
+                                height: 1.99.h,
                               ),
-                               Text(
-                                totalBalance.toString(),
-                                style: const TextStyle(
+                              AutoSizeText(
+                                totalBalance.toStringAsFixed(1),
+                                maxLines: 1,
+                                minFontSize: 23,
+                                style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 33,
+                                    fontSize: 30.0.sp,
                                     fontWeight: FontWeight.bold),
                               ),
                               const Spacer(),
@@ -121,25 +121,26 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      const Positioned(
-                          bottom: -80,
-                          right: -40,
+                      Positioned(
+                          bottom: -11.h,
+                          right: -10.w,
                           child: Image(
-                            image: AssetImage("assets/images/piggybank.png"),
-                            width: 180,
-                            height: 180,
+                            image:
+                                const AssetImage("assets/images/piggybank.png"),
+                            width: 24.0.h,
+                            height: 24.h,
                           )),
                     ],
                     clipBehavior: Clip.none,
                   ),
                 ),
-                const Positioned(
-                  left: -43.0,
-                  bottom: -164,
+                Positioned(
+                  left: -11.w,
+                  bottom: -20.h,
                   child: Image(
-                    image: AssetImage("assets/images/monotree.png"),
-                    width: 300,
-                    height: 300,
+                    image: const AssetImage("assets/images/monotree.png"),
+                    width: 41.h,
+                    height: 41.h,
                   ),
                 ),
               ],
@@ -147,11 +148,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Column(
               children: [
-                const Text(
+                Text(
                   "Cash",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  style:
+                      TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
                 ),
-               const SizedBox(height: 20,),
+                SizedBox(height: 2.h),
                 Stack(children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -164,8 +166,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                  width: 40,
-                                  height: 40,
+                                  width: 6.h,
+                                  height: 6.h,
                                   decoration: BoxDecoration(
                                       color: HexColor('#42887C'),
                                       borderRadius: BorderRadius.circular(30)),
@@ -173,27 +175,31 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Icons.house_siding,
                                     color: Colors.white,
                                   )),
-                              const SizedBox(
-                                height: 30,
+                              SizedBox(
+                                height: 5.h,
                               ),
-                               Text(
-                                totalIncome.toString(),
-                                style: const TextStyle(
-                                    fontSize: 22.0,
+                              AutoSizeText(
+                                totalIncome.toStringAsFixed(1),
+                                minFontSize: 13,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontSize: 18.0.sp,
                                     fontWeight: FontWeight.bold),
                               ),
-                              const Text(
-                                "Income",
+                              Text(
+                                " Income",
+                                style: GoogleFonts.robotoSlab(
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).focusColor),
                               ),
                             ],
                           ),
                         ),
-                        width: 170,
-                        height: 150,
+                        width: 39.w,
+                        height: 22.h,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: HexColor('#D9E7E5'),
-                        ),
+                            borderRadius: BorderRadius.circular(20),
+                            color: Theme.of(context).indicatorColor),
                       ),
                       Container(
                         child: Padding(
@@ -203,8 +209,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Container(
-                                  width: 40,
-                                  height: 40,
+                                  width: 6.h,
+                                  height: 6.h,
                                   decoration: BoxDecoration(
                                       color: const Color.fromARGB(
                                           255, 230, 146, 21),
@@ -213,48 +219,48 @@ class _HomeScreenState extends State<HomeScreen> {
                                     Icons.account_balance_wallet,
                                     color: Colors.white,
                                   )),
-                              const SizedBox(
-                                height: 30,
+                              SizedBox(
+                                height: 5.h,
                               ),
-                               Text(
-                               totalExpense.toString() ,
-                                style: const TextStyle(
-                                    fontSize: 22.0,
+                              AutoSizeText(
+                                totalExpense.toStringAsFixed(1),
+                                minFontSize: 13,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontSize: 18.0.sp,
                                     fontWeight: FontWeight.bold),
                               ),
-                              const Text(
-                                "Expense",
-                              ),
+                              Text("Expense",
+                                  style: GoogleFonts.robotoSlab(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context).focusColor)),
                             ],
                           ),
                         ),
-                        width: 170,
-                        height: 150,
+                        width: 39.w,
+                        height: 22.h,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: HexColor('#E6E2E6'),
-                        ),
+                            borderRadius: BorderRadius.circular(20),
+                            color: Theme.of(context).hoverColor),
                       ),
                     ],
                   ),
                   Positioned(
-                    top: 40,
-                    left: 158,
+                    top: 5.5.h,
+                    left: 40.w,
                     child: SizedBox(
-                      width: 80,
-                      height: 70.0,
+                      width: 10.h,
+                      height: 10.h,
                       child: FloatingActionButton(
                         onPressed: () {
                           TranscationDB.instance.refresh();
                           Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return const AddScreen();
-                          }));
+                              CustomPageRoute(child: const AddScreen()));
                         },
-                        child: const Icon(
+                        child: Icon(
                           Icons.add,
                           color: Colors.black,
-                          size: 35,
+                          size: 28.sp,
                         ),
                         backgroundColor: HexColor('#FFC727'),
                       ),
@@ -285,4 +291,3 @@ class CurveClipper extends CustomClipper<Path> {
     return true;
   }
 }
-

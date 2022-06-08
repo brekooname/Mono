@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:mono/screens/widgets/bottomnavigationbar.dart';
+import 'package:mono/screens/widgets/navigator_animation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sizer/sizer.dart';
 
-final _formkey=GlobalKey<FormState>();
+final _formkey = GlobalKey<FormState>();
 
 class OnboardScreen extends StatelessWidget {
-   OnboardScreen({Key? key}) : super(key: key);
+  OnboardScreen({Key? key}) : super(key: key);
 
-final _namecontroller=TextEditingController();
+  final namecontroller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,74 +26,52 @@ final _namecontroller=TextEditingController();
                     clipper: WaveClipper(),
                     child: Container(
                       color: HexColor('#EEF8F7'),
-                      height: 450.0,
+                      height: 60.0.h,
                     ),
                   ),
                   Positioned(
-                      bottom: -20,
-                      right: 30,
+                      bottom: -2.h,
+                      right: 23.w,
                       child: Image.asset(
-                        'assets/images/boardboy.png',
-                        width: 330,
+                        'assets/images/OO.png',
+                        width: 30.h,
                       )),
-                  Positioned(
-                    top: 106,
-                    left: 76,
-                    child: Image.asset("assets/images/Coint.png"),
-                    height: 75,
-                  ),
-                  Positioned(
-                    top: 150,
-                    right: 80,
-                    child: Image.asset("assets/images/Donut.png"),
-                    height: 65,
-                  ),
                 ],
                 clipBehavior: Clip.none,
               ),
             ),
             Column(children: [
-              const SizedBox(
-                height: 30,
+              SizedBox(
+                height: 3.h,
               ),
               headingtext("Spend Smarter"),
               headingtext("Save More"),
-              const SizedBox(
-                height: 30,
+              SizedBox(
+                height: 3.h,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 200, right: 30),
-                child: Form(
-                  key: _formkey,
-                  child: TextFormField(
-                    controller: _namecontroller,
-                    validator: ((value) {
-                      if(value==null||value.isEmpty){
-                      return 'please enter your name';
-                      }else{
-                        return null;
-                      }
-                      
-                
-                    }),
-                    
-                    decoration: InputDecoration(
-                        isDense: true,
-                        filled: true,
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: HexColor('#429690')),
-                            borderRadius: BorderRadius.circular(30)),
-                        fillColor: HexColor('#FBF3F3'),
-                        hintText: 'Please Enter Your name',
-                        hintStyle: const TextStyle(fontSize: 12.5),
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(color: HexColor("#438883")),
-                            borderRadius: BorderRadius.circular(10))),
-                  ),
+                padding: const EdgeInsets.only(left: 100, right: 100),
+                child: TextField(
+                  keyboardType: TextInputType.text,
+                  controller: namecontroller,
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      isDense: true,
+                      filled: true,
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: HexColor('#429690')),
+                          borderRadius: BorderRadius.circular(30)),
+                      fillColor: HexColor('#F4F5F5'),
+                      hintText: 'Please Enter Your name',
+                      hintStyle: TextStyle(fontSize: 8.5.sp),
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(color: HexColor("#438883")),
+                          borderRadius: BorderRadius.circular(30))),
                 ),
               ),
-              const SizedBox(
-                height: 40,
+              SizedBox(
+                height: 4.h,
               ),
               ElevatedButton(
                 style: ButtonStyle(
@@ -99,21 +79,14 @@ final _namecontroller=TextEditingController();
                         MaterialStateProperty.all(HexColor('#3E7C78')),
                     shape: MaterialStateProperty.all(const StadiumBorder()),
                     minimumSize:
-                        MaterialStateProperty.all(const Size(350, 60))),
-              onPressed: () {
-               // print(namecontrol);
-                if(_formkey.currentState!.validate()){
-                   gotohome(context);
-                }
- 
-               
-              }
-
-                ,
-                child: const Text(
+                        MaterialStateProperty.all(const Size(320, 55))),
+                onPressed: () {
+                  gotohome(context);
+                },
+                child: Text(
                   "Get Started",
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -129,24 +102,20 @@ final _namecontroller=TextEditingController();
     return Text(
       text,
       style: TextStyle(
-          fontSize: 34.0,
+          fontSize: 27.0.sp,
           fontWeight: FontWeight.bold,
           color: HexColor("#438883")),
     );
   }
 
-  gotohome(context)async{
-    final  namecontrol=_namecontroller.text;
+  gotohome(context) async {
+    final namecontrol = namecontroller.text;
     final sharedprefer = await SharedPreferences.getInstance();
-     sharedprefer.setString('namekey',namecontrol);
-    
-    
- 
-       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>const BottomNavigator()), (route) => false);
-    
-    }
+    sharedprefer.setString('namekey', namecontrol);
 
-   
+    Navigator.pushAndRemoveUntil(context,
+        CustomPageRoute(child: const BottomNavigator()), (route) => false);
+  }
 }
 
 class WaveClipper extends CustomClipper<Path> {

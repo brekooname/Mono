@@ -3,30 +3,16 @@ import 'package:mono/constants/app_color.dart';
 import 'package:mono/database/Transctions_DB/transcations_db.dart';
 import 'package:mono/models/transcation_model/transcation_model.dart';
 import 'package:mono/screens/add_screen/decoration_functions.dart';
+import 'package:sizer/sizer.dart';
 import 'package:mono/screens/widgets/add_clipper.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
 
 class EditScreen extends StatefulWidget {
-  // final double amount;
-  // final DateTime date;
-  // final String category;
-  // final String type;
-  // final String id;
   final TranscationModel value;
-
-  //final String? purpose;
-
-  const EditScreen(
-      {Key? key,
-      // required this.amount,
-      // required this.category,
-      // required this.date,
-      // required this.type,
-      // required this.id,
-      // this.purpose
-      required this.value,
-      })
-      : super(key: key);
+  const EditScreen({
+    Key? key,
+    required this.value,
+  }) : super(key: key);
 
   @override
   State<EditScreen> createState() => _EditScreenState();
@@ -50,10 +36,8 @@ class _EditScreenState extends State<EditScreen> {
   @override
   void initState() {
     _amountcontrol.text = widget.value.amount.toString();
+    _notescontrol.text = widget.value.purpose.toString();
     selectedDate = widget.value.date;
-    // _notescontrol.text=widget.purpose.toString();
-
-    super.initState();
 
     transcationType.add({"id": "Income", 'name': 'Income'});
     transcationType.add({"id": 'Expense', "name": 'Expense'});
@@ -70,7 +54,7 @@ class _EditScreenState extends State<EditScreen> {
       {'Id': 'Freelance', 'Name': 'Freelance', 'parentId': 'Income'},
       {'Id': 'Commission', 'Name': 'Commission', 'parentId': 'Income'},
     ];
-    //transctiontypeid = widget.type;
+    super.initState();
   }
 
   @override
@@ -79,40 +63,40 @@ class _EditScreenState extends State<EditScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: SizedBox(
-            height: MediaQuery.of(context).size.height,
+            height: 90.h,
             child: Stack(
               children: [
                 ClipPath(
                   clipper: CurveClipper(),
                   child: Container(
-                    color: mainHexcolor,
-                    height: 300,
+                    color: Theme.of(context).dividerColor,
+                    height: 40.h,
                   ),
                 ),
-                const Positioned(
-                  top: 55,
-                  left: 130,
+                Positioned(
+                  top: 5.h,
+                  left: 30.w,
                   child: Text(
                     "Edit Transcation",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 17,
+                      fontSize: 15.sp,
                     ),
                   ),
                 ),
                 Positioned(
-                  top: 95,
-                  left: 23.0,
+                  top: 12.h,
+                  left: 5.w,
                   child: Container(
-                    width: 350.0,
-                    height: 710,
+                    width: 90.0.w,
+                    height: 82.h,
                     decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).dialogBackgroundColor,
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
-                              color: Colors.grey.withOpacity(1), blurRadius: 10)
+                              color: Colors.grey.withOpacity(1), blurRadius: 5)
                         ]),
                     child: Form(
                       key: _formkey,
@@ -122,8 +106,8 @@ class _EditScreenState extends State<EditScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             textstyle("transcation type"),
-                            const SizedBox(
-                              height: 10,
+                            SizedBox(
+                              height: 1.5.h,
                             ),
                             FormHelper.dropDownWidget(
                               context,
@@ -152,13 +136,15 @@ class _EditScreenState extends State<EditScreen> {
                               borderColor: Colors.grey,
                               borderRadius: 10,
                               borderFocusColor: mainHexcolor,
+                              paddingLeft: 1,
+                              paddingRight: 1,
                             ),
-                            const SizedBox(
-                              height: 24,
+                            SizedBox(
+                              height: 2.h,
                             ),
                             textstyle('Amount'),
-                            const SizedBox(
-                              height: 10,
+                            SizedBox(
+                              height: 1.5.h,
                             ),
                             TextFormField(
                               validator: (value) {
@@ -171,12 +157,12 @@ class _EditScreenState extends State<EditScreen> {
                               keyboardType: TextInputType.number,
                               decoration: textfielddecor("Enter Amount"),
                             ),
-                            const SizedBox(
-                              height: 24,
+                            SizedBox(
+                              height: 2.h,
                             ),
                             textstyle("Date"),
-                            const SizedBox(
-                              height: 10,
+                            SizedBox(
+                              height: 1.5.h,
                             ),
                             ElevatedButton.icon(
                               onPressed: () async {
@@ -191,29 +177,31 @@ class _EditScreenState extends State<EditScreen> {
                                 color: Colors.grey,
                               ),
                               label: Padding(
-                                padding: const EdgeInsets.only(right: 170.0),
+                                padding: const EdgeInsets.only(right: 155.0),
                                 child: Text(
                                   '${selectedDate.day} / ${selectedDate.month} / ${selectedDate.year}',
                                   style: const TextStyle(
-                                      color: Color.fromARGB(255, 87, 83, 83)),
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
                                 elevation: 0,
                                 side: const BorderSide(color: Colors.grey),
-                                primary: Colors.white,
+                                primary:
+                                    Theme.of(context).dialogBackgroundColor,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                minimumSize: const Size(400, 55),
+                                minimumSize: const Size(400, 50),
                               ),
                             ),
-                            const SizedBox(
-                              height: 24,
+                            SizedBox(
+                              height: 2.h,
                             ),
                             textstyle("Categories"),
-                            const SizedBox(
-                              height: 10,
+                            SizedBox(
+                              height: 1.5.h,
                             ),
                             FormHelper.dropDownWidget(
                               context,
@@ -232,26 +220,27 @@ class _EditScreenState extends State<EditScreen> {
                               borderFocusColor: mainHexcolor,
                               optionValue: "Id",
                               optionLabel: "Name",
+                              paddingLeft: 1,
+                              paddingRight: 1,
                             ),
-                            const SizedBox(
-                              height: 10,
+                            SizedBox(
+                              height: 2.h,
                             ),
                             textstyle("Notes"),
-                            const SizedBox(
-                              height: 8,
+                            SizedBox(
+                              height: 1.5.h,
                             ),
                             TextFormField(
                               controller: _notescontrol,
                               keyboardType: TextInputType.text,
                               decoration: textfielddecor('Enter Notes'),
                             ),
-                            const SizedBox(
-                              height: 35.0,
+                            SizedBox(
+                              height: 3.5.h,
                             ),
                             ElevatedButton(
                               onPressed: () {
                                 updatetranscation();
-                                
                               },
                               child: const Text(
                                 'Update',
@@ -259,9 +248,10 @@ class _EditScreenState extends State<EditScreen> {
                                     color: Color.fromARGB(255, 246, 243, 243)),
                               ),
                               style: ElevatedButton.styleFrom(
-                                primary: mainHexcolor,
+                                primary: Theme.of(context).primaryColorLight,
+                                elevation: 2,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                                 minimumSize: const Size(400, 55),
                               ),
@@ -304,10 +294,10 @@ class _EditScreenState extends State<EditScreen> {
     if (_parseamount == null) {
       return;
     }
-    if (categoryid == null) {
+    if (categoryid == null||_parseamount == 0) {
       return;
     }
-        final _model = TranscationModel(
+    final _model = TranscationModel(
         type: transctiontypeid!,
         amount: _parseamount,
         date: selectedDate,
@@ -316,8 +306,7 @@ class _EditScreenState extends State<EditScreen> {
         id: widget.value.id);
 
     TranscationDB.instance.updatetranscation(_model);
-    print('after value $_parseamount');
-       Navigator.of(context).pop( _model);
-       
+
+    Navigator.of(context).pop(_model);
   }
 }

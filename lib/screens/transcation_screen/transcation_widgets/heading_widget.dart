@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 
+// ignore: must_be_immutable
 class HeadingMethod extends StatelessWidget {
   String headtext;
-  String amount;
+  String? amount;
   HeadingMethod({
     Key? key,
     required this.headtext,
-    required this.amount,
+     this.amount=''
   }) : super(key: key);
 
   @override
@@ -16,11 +18,11 @@ class HeadingMethod extends StatelessWidget {
       children: [
         Text(
           headtext,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+          style:  TextStyle(fontWeight: FontWeight.bold, fontSize: 13.sp),
         ),
         Text(
-          amount,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          amount!,
+          style:  TextStyle(fontWeight: FontWeight.bold, fontSize: 12.sp),
         )
       ],
     );
