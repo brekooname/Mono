@@ -5,8 +5,6 @@ import 'package:mono/screens/widgets/navigator_animation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
-final _formkey = GlobalKey<FormState>();
-
 class OnboardScreen extends StatelessWidget {
   OnboardScreen({Key? key}) : super(key: key);
 

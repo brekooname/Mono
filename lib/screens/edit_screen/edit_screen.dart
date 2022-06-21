@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mono/constants/app_color.dart';
 import 'package:mono/database/Transctions_DB/transcations_db.dart';
 import 'package:mono/models/transcation_model/transcation_model.dart';
 import 'package:mono/screens/add_screen/decoration_functions.dart';
+import 'package:mono/screens/widgets/snackbar.dart';
 import 'package:sizer/sizer.dart';
 import 'package:mono/screens/widgets/add_clipper.dart';
 import 'package:snippet_coder_utils/FormHelper.dart';
@@ -43,23 +45,36 @@ class _EditScreenState extends State<EditScreen> {
     transcationType.add({"id": 'Expense', "name": 'Expense'});
 
     categorieslist = [
-      {'Id': 'Shopping', 'Name': 'Shopping', 'parentId': 'Expense'},
+      {
+        'Id': 'Shopping',
+        'Name': 'Shopping',
+        'parentId': 'Expense,',
+      },
       {'Id': 'Travel', 'Name': 'Travel', 'parentId': 'Expense'},
       {'Id': 'Food', 'Name': 'Food', 'parentId': 'Expense'},
-      {'Id': 'Rent', 'Name': 'Rent', 'parentId': 'Expense'},
+      {'Id': 'Rental', 'Name': 'Rental', 'parentId': 'Expense'},
       {'Id': 'Medical', 'Name': 'Medical', 'parentId': 'Expense'},
+      {'Id': 'Insurance', 'Name': 'Insurance', 'parentId': 'Expense'},
+      {'Id': 'Investments', 'Name': 'Investments', 'parentId': 'Expense'},
       {'Id': 'Utilities', 'Name': 'Utilites', 'parentId': 'Expense'},
-      {'Id': 'Educations`', 'Name': 'Educations', 'parentId': 'Expense'},
+      {'Id': 'Educations', 'Name': 'Educations', 'parentId': 'Expense'},
+      {'Id': 'Entertainment', 'Name': 'Entertainment', 'parentId': 'Expense'},
+      {'Id': 'Other', 'Name': 'Other', 'parentId': 'Expense'},
       {'Id': 'Salary', 'Name': 'Salary', 'parentId': 'Income'},
       {'Id': 'Freelance', 'Name': 'Freelance', 'parentId': 'Income'},
       {'Id': 'Commission', 'Name': 'Commission', 'parentId': 'Income'},
+      {'Id': 'Investments', 'Name': 'Investments', 'parentId': 'Income'},
+      {'Id': 'Rental', 'Name': 'Rental', 'parentId': 'Income'},
+      {'Id': 'Other', 'Name': 'Other', 'parentId': 'Income'},
     ];
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+     
     return Scaffold(
+      
       body: SafeArea(
         child: SingleChildScrollView(
           child: SizedBox(
@@ -119,7 +134,7 @@ class _EditScreenState extends State<EditScreen> {
                                 setState(() {});
                                 transctiontypeid = onchangeval;
 
-                                //print("after ${widget.type}");
+                               
                                 setState(() {
                                   categories = categorieslist
                                       .where((categoryItem) =>
@@ -129,10 +144,17 @@ class _EditScreenState extends State<EditScreen> {
                                 });
                               },
                               (onValidate) {
-                                if (onValidate == null) {
-                                  return;
-                                }
+                               
+                               final snack= customSnak(context, message: "Select transcation type ");
+                              if (transctiontypeid==null) {
+                                return  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snack);
+                              }else{
+                                return null;
+                              }
+                              
                               },
+                              
                               borderColor: Colors.grey,
                               borderRadius: 10,
                               borderFocusColor: mainHexcolor,
@@ -154,6 +176,9 @@ class _EditScreenState extends State<EditScreen> {
                                 return null;
                               },
                               controller: _amountcontrol,
+                               inputFormatters: [
+                                LengthLimitingTextInputFormatter(12),
+                              ],
                               keyboardType: TextInputType.number,
                               decoration: textfielddecor("Enter Amount"),
                             ),
@@ -177,7 +202,7 @@ class _EditScreenState extends State<EditScreen> {
                                 color: Colors.grey,
                               ),
                               label: Padding(
-                                padding: const EdgeInsets.only(right: 155.0),
+                                padding: const EdgeInsets.only(right: 150.0),
                                 child: Text(
                                   '${selectedDate.day} / ${selectedDate.month} / ${selectedDate.year}',
                                   style: const TextStyle(
@@ -213,7 +238,13 @@ class _EditScreenState extends State<EditScreen> {
                                 categoryid = onchangeval;
                               },
                               (onValidate) {
-                                return null;
+                                final snack =customSnak(context,message: "Please select category");
+                                if (categoryid == null) {
+                                  return ScaffoldMessenger.of(context)
+                                      .showSnackBar(snack);
+                                } else {
+                                  return null;
+                                }
                               },
                               borderColor: Colors.grey,
                               borderRadius: 10,
@@ -231,6 +262,10 @@ class _EditScreenState extends State<EditScreen> {
                               height: 1.5.h,
                             ),
                             TextFormField(
+                               inputFormatters: [
+                                LengthLimitingTextInputFormatter(8)
+                              ],
+                              
                               controller: _notescontrol,
                               keyboardType: TextInputType.text,
                               decoration: textfielddecor('Enter Notes'),
@@ -240,6 +275,7 @@ class _EditScreenState extends State<EditScreen> {
                             ),
                             ElevatedButton(
                               onPressed: () {
+                              
                                 updatetranscation();
                               },
                               child: const Text(
@@ -291,11 +327,13 @@ class _EditScreenState extends State<EditScreen> {
     final purposeval = _notescontrol.text;
 
     final _parseamount = double.tryParse(amountval);
-    if (_parseamount == null) {
-      return;
+    if (_parseamount == null|| _parseamount.isNegative||_parseamount==0) {
+      final snack =customSnak(context, message: "Enter valid number");
+      return ScaffoldMessenger.of(context).showSnackBar(snack);
     }
-    if (categoryid == null||_parseamount == 0) {
-      return;
+    if (categoryid == null) {
+      final snack =customSnak(context, message: "Please select category");
+      return ScaffoldMessenger.of(context).showSnackBar(snack);
     }
     final _model = TranscationModel(
         type: transctiontypeid!,

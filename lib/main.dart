@@ -8,6 +8,7 @@ import 'package:mono/screens/IntroPages/splash_screen.dart';
 import 'package:mono/screens/widgets/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'providers/notification_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   DarkThemeProvider themeChangeProvider = DarkThemeProvider();
+  NotificationProvider notificationProvider = NotificationProvider();
+
+  void getCurrentNotification() async {
+    notificationProvider.notifValue =
+        await notificationProvider.notificationPreference.getnotification();
+  }
 
   void getCurrentAppTheme() async {
     themeChangeProvider.darkTheme =
@@ -43,6 +50,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     getCurrentAppTheme();
+    getCurrentNotification();
     super.initState();
   }
 
@@ -53,15 +61,19 @@ class _MyAppState extends State<MyApp> {
           providers: [
             ChangeNotifierProvider(create: (_) {
               return themeChangeProvider;
+            }),
+            ChangeNotifierProvider(create: (_) {
+              return notificationProvider;
             })
           ],
           child: Consumer<DarkThemeProvider>(builder: (context, value, child) {
+            
             return MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: Styles.themeData(themeChangeProvider.darkTheme, context),
               home: const SplashScreen(),
             );
-          }));
+    }));
     });
   }
 }

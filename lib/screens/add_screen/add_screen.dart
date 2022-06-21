@@ -5,6 +5,7 @@ import 'package:mono/constants/app_color.dart';
 import 'package:mono/database/Transctions_DB/transcations_db.dart';
 import 'package:mono/models/transcation_model/transcation_model.dart';
 import 'package:mono/screens/add_screen/decoration_functions.dart';
+import 'package:mono/screens/widgets/snackbar.dart';
 import 'package:sizer/sizer.dart';
 import 'package:mono/screens/widgets/add_clipper.dart';
 import 'package:mono/screens/widgets/bottomnavigationbar.dart';
@@ -131,8 +132,12 @@ class _AddScreenState extends State<AddScreen> {
                                       onchangeval.toString())
                                   .toList();
                             }, (onValidate) {
-                              if (onValidate == null) {
-                                return;
+                              final snack= customSnak(context, message: "Select transcation type ");
+                              if (transctiontypeid == null) {
+                                return  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snack);
+                              }else{
+                                return null;
                               }
                             },
                                 borderColor: Colors.grey,
@@ -152,7 +157,7 @@ class _AddScreenState extends State<AddScreen> {
                             TextFormField(
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return;
+                                  return ;
                                 }
                                 return null;
                               },
@@ -217,7 +222,13 @@ class _AddScreenState extends State<AddScreen> {
                                 categoryid = onchangeval;
                               },
                               (onValidate) {
-                                return null;
+                                final snack =customSnak(context,message: "Please select category");
+                                if (categoryid == null) {
+                                  return ScaffoldMessenger.of(context)
+                                      .showSnackBar(snack);
+                                } else {
+                                  return null;
+                                }
                               },
                               borderColor: Colors.grey,
                               borderRadius: 10,
@@ -286,6 +297,8 @@ class _AddScreenState extends State<AddScreen> {
     );
   }
 
+ 
+
   Future<DateTime?> pickDate(context) async {
     final selected = await showDatePicker(
       context: context,
@@ -302,17 +315,17 @@ class _AddScreenState extends State<AddScreen> {
   }
 
   Future addtransbutton() async {
-    
     final amountval = _amountcontrol.text;
     final purposeval = _notescontrol.text;
 
     final _parseamount = double.tryParse(amountval);
-    if (_parseamount == null||_parseamount == 0) {
-      return;
+    if (_parseamount == null || _parseamount == 0||_parseamount.isNegative) {
+      final snack=customSnak(context, message: "Enter valid number");
+      return ScaffoldMessenger.of(context).showSnackBar(snack);
     }
-    if (categoryid == null) {
-      return;
-    }
+    // if (categoryid == null) {
+    //   return;
+    // }
 
     final _model = TranscationModel(
         type: transctiontypeid!,
@@ -326,3 +339,5 @@ class _AddScreenState extends State<AddScreen> {
         MaterialPageRoute(builder: (context) => const BottomNavigator()));
   }
 }
+
+ 

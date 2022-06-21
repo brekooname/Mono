@@ -1,4 +1,4 @@
-package com.example.mono
+package com.ror.mono
 
 import io.flutter.embedding.android.FlutterActivity
 

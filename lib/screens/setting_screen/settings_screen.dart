@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mono/constants/app_color.dart';
 import 'package:mono/database/Transctions_DB/transcations_db.dart';
+import 'package:mono/providers/notification_provider.dart';
 import 'package:mono/providers/theme_provider.dart';
 import 'package:mono/screens/IntroPages/splash_screen.dart';
 import 'package:mono/screens/add_screen/add_screen.dart';
@@ -10,9 +11,6 @@ import 'package:mono/screens/setting_screen/settings_widgets/notification.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-bool switchnoti = true;
-//bool _switchtheme = false;
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -41,7 +39,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    MediaQuery.of(context).size.width;
+    MediaQuery.of(context).size.height;
     final themepovider = Provider.of<DarkThemeProvider>(context);
+    final notificationProvider = Provider.of<NotificationProvider>(context);
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -89,18 +90,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     ),
                                     secondary: const Icon(Icons.notifications),
                                     activeColor: mainHexcolor,
-                                    value: switchnoti,
+                                    value: notificationProvider.notifValue,
                                     onChanged: (newvalue) {
                                       setState(() {
-                                        switchnoti = newvalue;
+                                        notificationProvider.notifValue =
+                                            newvalue;
                                       });
-                                      switchnoti == true
+                                      notificationProvider.notifValue == true
                                           ? NotificationApi.shownotification(
                                               title: 'Mono',
                                               body:
                                                   "Don't Forget To Add Your Transaction",
                                               scheduleDate:
-                                                  const Time(18, 00, 00))
+                                                  const Time(10, 06, 00))
                                           : const SizedBox();
                                     }),
                                 SizedBox(
@@ -182,13 +184,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         minimumSize: MaterialStateProperty.all(
                                             Size(1.w, 5.5.h))),
                                     onPressed: () async {
-                                      TranscationDB.instance.cleardatabase();
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const SplashScreen()),
-                                          (route) => false);
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                                title: const Text(
+                                                  'Alert!!!',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: Colors.red),
+                                                ),
+                                                content: const Text(
+                                                  ' All transaction details will be deleted.\n\nDo you like to continue ?',
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                actions: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      TextButton(
+                                                          onPressed: () async {
+                                                            TranscationDB
+                                                                .instance
+                                                                .cleardatabase();
+                                                            Navigator.pushAndRemoveUntil(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            const SplashScreen()),
+                                                                (route) =>
+                                                                    false);
+                                                          },
+                                                          child: const Text(
+                                                              'Yes')),
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child:
+                                                              const Text('No'))
+                                                    ],
+                                                  )
+                                                ]);
+                                          });
                                     },
                                     child: const Text("Reset App"))
                               ],

@@ -7,6 +7,7 @@ import 'package:lottie/lottie.dart';
 import 'package:mono/database/Transctions_DB/transcations_db.dart';
 import 'package:mono/screens/edit_screen/edit_screen.dart';
 import 'package:mono/screens/widgets/add_clipper.dart';
+import 'package:mono/screens/widgets/snackbar.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../models/transcation_model/transcation_model.dart';
 import 'transcation_widgets/graph_widget.dart';
@@ -168,8 +169,8 @@ class _TranscationScreenState extends State<TranscationScreen> {
                         List<TranscationModel> newlist, _) {
                       return newlist.isEmpty
                           ? Stack(children: [
-                    
-                                   Lottie.asset(           'assets/images/animation/paymentshero1.json')
+                              Lottie.asset(
+                                  'assets/images/animation/paymentshero1.json')
                             ])
                           : ListView.builder(
                               shrinkWrap: true,
@@ -219,15 +220,8 @@ class _TranscationScreenState extends State<TranscationScreen> {
                                               TranscationDB.instance.refresh();
                                               setState(() {});
 
-                                              final snack = SnackBar(
-                                                  backgroundColor:
-                                                      Colors.black87,
-                                                  content: Text(
-                                                    "Deleted",
-                                                    style: TextStyle(
-                                                        color: Theme.of(context)
-                                                            .focusColor),
-                                                  ));
+                                              final snack = customSnak(context,
+                                                  message: "Deleted");
 
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(snack);

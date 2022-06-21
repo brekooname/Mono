@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import 'package:mono/database/Transctions_DB/transcations_db.dart';
@@ -59,15 +58,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   top: 5.h,
                   left: 10.w,
                   child: Text("Hi, $enteredname ",
-                      style: GoogleFonts.dancingScript(
-                          color: Colors.white, fontSize: 23.sp)),
+                      style: TextStyle(fontFamily:"DancingScript",
+                          color: Colors.white, fontSize: 23.sp, )),
                 ),
                 Positioned(
                   top: 11.h,
                   left: 10.w,
                   child: Text(
                     "Welcome back !",
-                    style: GoogleFonts.dancingScript(
+                    style: TextStyle(fontFamily: "DancingScript",
                         color: Colors.white,
                         fontSize: 24.sp,
                         fontWeight: FontWeight.bold),
@@ -111,7 +110,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               const Spacer(),
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: ((context) =>const TranscationScreen())));
+                                },
                                 child: const Text(
                                   "See details",
                                   style: TextStyle(color: Colors.white),
@@ -187,8 +188,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                " Income",
-                                style: GoogleFonts.robotoSlab(
+                                "Income",
+                                style:TextStyle(fontFamily: "Merriweather",
                                     fontWeight: FontWeight.bold,
                                     color: Theme.of(context).focusColor),
                               ),
@@ -231,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     fontWeight: FontWeight.bold),
                               ),
                               Text("Expense",
-                                  style: GoogleFonts.robotoSlab(
+                                  style: TextStyle(fontFamily: "Merriweather",
                                       fontWeight: FontWeight.bold,
                                       color: Theme.of(context).focusColor)),
                             ],

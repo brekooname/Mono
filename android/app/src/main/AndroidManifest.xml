@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.ror.mono">
+    package="com.ror.mono">
    <application
         android:label="Mono"
         android:name="${applicationName}"
