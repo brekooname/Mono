@@ -1,4 +1,4 @@
-# mono
+# Mono -Money Management Applications.
 
 Mono is money management application .Which contains mainly six screen.
 1 - Splash screen.
